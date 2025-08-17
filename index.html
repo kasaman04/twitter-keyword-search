@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter キーワード検索ツール</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Twitter キーワード検索ツール</h1>
+            <p>CSVファイルを読み込んで、キーワードをクリックするとYahoo!リアルタイム検索で検索できます</p>
+        </header>
+        
+        <div class="upload-section">
+            <label for="csvFile" class="file-label">
+                <span>📁 CSVファイルを選択</span>
+                <input type="file" id="csvFile" accept=".csv" style="display: none;">
+            </label>
+            <div id="fileName" class="file-name"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="loadDefault" class="btn btn-secondary">デフォルトCSVを読み込み</button>
+            <button id="clearTable" class="btn btn-danger">表をクリア</button>
+        </div>
+        
+        <div class="table-container">
+            <div id="loadingMessage" class="loading" style="display: none;">
+                読み込み中...
+            </div>
+            <div id="errorMessage" class="error" style="display: none;"></div>
+            <table id="dataTable" style="display: none;">
+                <thead id="tableHeader"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        
+        <div class="instructions">
+            <h3>使い方</h3>
+            <ul>
+                <li>CSVファイルを選択するか、「デフォルトCSVを読み込み」ボタンをクリック</li>
+                <li>表が表示されたら、任意のセル（商品名やキーワード）をクリック</li>
+                <li>Yahoo!リアルタイム検索で新しいタブが開き、そのキーワードで検索されます</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
