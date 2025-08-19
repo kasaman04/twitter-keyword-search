@@ -41,21 +41,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     applyImagesBtn.addEventListener('click', function() {
         const inputText = imageUrlInput.value.trim();
+        console.log('入力テキスト:', inputText);
+        
         if (inputText) {
             // 改行で分割して各商品の画像URL群を取得
             const lines = inputText.split('\n').map(line => line.trim()).filter(line => line);
+            console.log('分割された行:', lines);
             
             // 各行から最初の画像URLのみを抽出
             imageUrls = lines.map(line => {
                 const urls = line.split(';').map(url => url.trim()).filter(url => url);
+                console.log('行のURL:', urls);
                 return urls.length > 0 ? urls[0] : null;
             }).filter(url => url !== null);
             
-            updateTableWithImages();
-            imageInputSection.style.display = 'none';
-            imageUrlInput.value = '';
+            console.log('抽出された画像URL:', imageUrls);
+            console.log('CSVデータの存在:', !!csvData);
+            console.log('CSVデータ長:', csvData ? csvData.length : 0);
             
-            console.log(`${imageUrls.length}個の商品画像を追加しました`);
+            if (csvData && csvData.length > 0) {
+                updateTableWithImages();
+                imageInputSection.style.display = 'none';
+                imageUrlInput.value = '';
+                alert(`${imageUrls.length}個の商品画像を追加しました`);
+            } else {
+                alert('先にCSVファイルを読み込んでください');
+            }
         } else {
             alert('画像URLを入力してください');
         }
@@ -176,12 +187,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function createImageElement(url) {
+        console.log('画像要素を作成:', url);
         const img = document.createElement('img');
         img.src = url;
         img.className = 'product-image';
         img.alt = '商品画像';
         img.onerror = function() {
+            console.log('画像読み込みエラー:', url);
             this.style.display = 'none';
+        };
+        img.onload = function() {
+            console.log('画像読み込み成功:', url);
         };
         img.onclick = function(e) {
             e.stopPropagation();
@@ -199,6 +215,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateTable(data, includeImages = false) {
+        console.log('generateTable呼び出し:', {
+            dataLength: data ? data.length : 0,
+            includeImages: includeImages,
+            imageUrlsLength: imageUrls.length
+        });
+        
         if (!data || data.length === 0) {
             showError('CSVデータが空です');
             return;
@@ -211,6 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const headerRow = document.createElement('tr');
         
         if (includeImages && imageUrls.length > 0) {
+            console.log('画像列を追加します');
             const imgTh = document.createElement('th');
             imgTh.textContent = '画像';
             headerRow.appendChild(imgTh);
@@ -234,10 +257,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const imgTd = document.createElement('td');
                 const imageIndex = i - 1;
                 
+                console.log(`行${i}の画像処理:`, {
+                    imageIndex: imageIndex,
+                    imageUrl: imageUrls[imageIndex],
+                    totalImages: imageUrls.length
+                });
+                
                 if (imageUrls[imageIndex]) {
                     // すでに最初のURLのみが格納されているので、そのまま使用
                     const img = createImageElement(imageUrls[imageIndex]);
                     imgTd.appendChild(img);
+                    console.log(`画像要素を追加しました: ${imageUrls[imageIndex]}`);
                 }
                 
                 tr.appendChild(imgTd);
