@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const csvFileInput = document.getElementById('csvFile');
     const fileNameDisplay = document.getElementById('fileName');
+    const loadDefaultBtn = document.getElementById('loadDefault');
     const clearTableBtn = document.getElementById('clearTable');
     const loadImagesBtn = document.getElementById('loadImages');
     const imageInputSection = document.getElementById('imageInputSection');
@@ -23,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
             fileNameDisplay.textContent = `選択されたファイル: ${file.name}`;
             loadCSVFile(file);
         }
+    });
+
+    loadDefaultBtn.addEventListener('click', function() {
+        loadDefaultCSV();
     });
 
     clearTableBtn.addEventListener('click', function() {
@@ -114,6 +119,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 showError('ファイル読み込みエラー: ' + error.message);
             }
         });
+    }
+
+    function loadDefaultCSV() {
+        showLoading();
+        fileNameDisplay.textContent = 'デフォルトファイル: Twitter________________.csv';
+        
+        fetch('./Twitter________________.csv')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('デフォルトCSVファイルが見つかりません');
+                }
+                return response.text();
+            })
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        if (results.errors.length > 0) {
+                            showError('デフォルトCSVファイルの解析エラー: ' + results.errors[0].message);
+                            return;
+                        }
+                        
+                        csvData = results.data;
+                        generateTable(csvData, false);
+                    },
+                    error: function(error) {
+                        showError('デフォルトCSVファイル解析エラー: ' + error.message);
+                    }
+                });
+            })
+            .catch(error => {
+                showError('デフォルトCSVファイル読み込みエラー: ' + error.message);
+            });
     }
 
     function isImageUrl(text) {
