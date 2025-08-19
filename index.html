@@ -11,20 +11,36 @@
     <div class="container">
         <header>
             <h1>Twitter キーワード検索ツール</h1>
-            <p>CSVファイルを読み込んで、キーワードをクリックするとYahoo!リアルタイム検索で検索できます</p>
+            <p>CSVファイルを読み込んで、商品画像付きでキーワードを表示します</p>
         </header>
         
         <div class="upload-section">
-            <label for="csvFile" class="file-label">
-                <span>📁 CSVファイルを選択</span>
-                <input type="file" id="csvFile" accept=".csv" style="display: none;">
-            </label>
+            <div class="upload-controls">
+                <label for="csvFile" class="file-label">
+                    <span>📁 CSVファイルを選択</span>
+                    <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                </label>
+                <button id="loadImages" class="btn btn-primary">画像URLを追加</button>
+            </div>
             <div id="fileName" class="file-name"></div>
         </div>
         
         <div class="controls">
             <button id="loadDefault" class="btn btn-secondary">デフォルトCSVを読み込み</button>
             <button id="clearTable" class="btn btn-danger">表をクリア</button>
+        </div>
+        
+        <div id="imageInputSection" class="image-input-section" style="display: none;">
+            <h3>画像URLを入力してください</h3>
+            <textarea id="imageUrlInput" placeholder="画像URLを入力（1行につき1商品、セミコロン区切りで複数画像可）
+例: 
+商品1: https://example.com/img1.jpg;https://example.com/img2.jpg
+商品2: https://example.com/img3.jpg;https://example.com/img4.jpg
+※各商品の1枚目の画像のみが使用されます"></textarea>
+            <div class="image-input-controls">
+                <button id="applyImages" class="btn btn-success">画像を適用</button>
+                <button id="cancelImages" class="btn btn-secondary">キャンセル</button>
+            </div>
         </div>
         
         <div class="table-container">
@@ -42,6 +58,7 @@
             <h3>使い方</h3>
             <ul>
                 <li>CSVファイルを選択するか、「デフォルトCSVを読み込み」ボタンをクリック</li>
+                <li>「画像URLを追加」ボタンで商品画像を追加（オプション）</li>
                 <li>表が表示されたら、任意のセル（商品名やキーワード）をクリック</li>
                 <li>Yahoo!リアルタイム検索で新しいタブが開き、そのキーワードで検索されます</li>
             </ul>
